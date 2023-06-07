@@ -34,6 +34,15 @@ class PhpdocCommand extends BaseCommand
     {
         $resourceName = $input->getArgument('resource');
 
+        if ($resourceName == 'Wrapper') {
+            return $this->generateWrapper($input, $output);
+        }
+
+        return $this->generateResource($input, $output, $resourceName);
+    }
+
+    protected function generateResource(InputInterface $input, OutputInterface $output, string $resourceName): int
+    {
         $schema = $this->getWrapper()->schema->resource($resourceName);
         if ($schema == null) {
             throw new InvalidArgumentException("Resource not found: {$resourceName}");
@@ -60,7 +69,7 @@ class PhpdocCommand extends BaseCommand
                 continue;
             }
 
-            $this->outputProperty($io, $dataType->phpType(), $name);
+            $this->outputProperty($io, $dataType->phpType(), $schema->attributeName($name));
         }
 
         $this->emptyLine = true;
@@ -83,7 +92,7 @@ class PhpdocCommand extends BaseCommand
                 continue;
             }
 
-            $this->outputProperty($io, $relatedClass, $name);
+            $this->outputProperty($io, $relatedClass, $schema->attributeName($name));
         }
 
         $this->emptyLine = true;
@@ -106,7 +115,7 @@ class PhpdocCommand extends BaseCommand
                 continue;
             }
 
-            $this->outputProperty($io, $relatedClass, $name);
+            $this->outputProperty($io, $relatedClass, $schema->attributeName($name));
         }
 
         $exitCode = static::SUCCESS;
@@ -130,7 +139,7 @@ class PhpdocCommand extends BaseCommand
         return str_replace('CommunityDS\Deputy\Api\Model\\', '', $class);
     }
 
-    protected function outputProperty(SymfonyStyle $io, $phpType, $name)
+    protected function outputProperty(SymfonyStyle $io, $phpType, $property)
     {
         if ($this->emptyLine) {
             $io->writeln(' * ');
@@ -142,11 +151,49 @@ class PhpdocCommand extends BaseCommand
             $phpType = 'DateTime';
         }
 
-        $property = strtolower(substr($name, 0, 1)) . substr($name, 1);
         if (!isset($this->properties[$property])) {
             $this->properties[$property] = 0;
         }
         $this->properties[$property]++;
+
         $io->writeln(" * @property {$phpType} \${$property}");
+    }
+
+    protected function generateWrapper(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+
+        $schema = $this->getWrapper()->schema;
+        $names = $schema->resourceNames();
+        sort($names);
+
+        foreach ($names as $resourceName) {
+            if ($resourceName == 'Me') {
+                continue;
+            }
+
+            $resource = $schema->resource($resourceName);
+
+            $modelClass = str_replace('CommunityDS\Deputy\Api\\', '', $resource->modelClass);
+            if ($resource->endpoints === true) {
+                $io->writeln(' * @method ' . $modelClass . ' create' . $resource->getSingularName() . '()');
+                $io->writeln(' * @method ' . $modelClass . ' delete' . $resource->getSingularName() . '($id)');
+                $io->writeln(' * @method ' . $modelClass . ' get' . $resource->getSingularName() . '($id)');
+                if ($resource->getSingularName() != $resource->getPluralName()) {
+                    $io->writeln(' * @method ' . $modelClass . '[] get' . $resource->getPluralName() . '()');
+                }
+                $io->writeln(' * @method Query find' . $resource->getPluralName() . '()');
+            } elseif (is_array($resource->endpoints)) {
+                foreach ($resource->endpoints as $method => $uri) {
+                    if ($method == 'id') {
+                        $io->writeln(' * @method ' . $modelClass . ' get' . $resource->getSingularName() . '($id)');
+                    }
+                }
+            }
+
+            $io->writeln(' * ');
+        }
+
+        return static::SUCCESS;
     }
 }
