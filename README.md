@@ -32,7 +32,7 @@ Information regarding the user should appear.
 
 ## Usage
 
-Run the `./console` command to display the usage information to confirm things are working as expected.
+Run the `./console` command to display the usage information.
 
 To view raw responses from the Deputy API when running any command, increase the verbosity of the command by passing in the `-vvv` option. For example:
 
