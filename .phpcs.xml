@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset>
+    <rule ref="CDS"/>
+    <rule ref="PHPCompatibility"/>
+    <config name="testVersion" value="8.1-"/>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+</ruleset>

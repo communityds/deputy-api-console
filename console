@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+error_reporting(E_ALL);
+
+use CommunityDS\Deputy\Api\Console\ConsoleApplication;
+
+require_once __DIR__ . '/vendor/autoload.php';
+
+$app = new ConsoleApplication();
+$app->run();

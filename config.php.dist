@@ -1,0 +1,18 @@
+<?php
+// make a copy of this file called `config.php` within this directory
+return [
+    'auth' => [
+        'class' => 'CommunityDS\Deputy\Api\Adapter\Config\PermanentToken',
+        'token' => 'e9d60c4e518815fc92430bc76deb7567',
+    ],
+    'client' => [
+        'class' => 'CommunityDS\Deputy\Api\Adapter\Guzzle7\Client',
+    ],
+    'logger' => [
+        'class' => 'CommunityDS\Deputy\Api\Console\Adapter\ConsoleOutputLogger',
+    ],
+    'target' => [
+        'class' => 'CommunityDS\Deputy\Api\Adapter\Config\TargetConfig',
+        'domain' => 'sandbox.au.deputy.com',
+    ],
+];

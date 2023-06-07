@@ -1,0 +1,29 @@
+{
+    "require": {
+        "php": ">=8.1",
+        "communityds/deputy-api-wrapper": "^1.5",
+        "guzzlehttp/guzzle": "^7.7",
+        "psr/log": "^3.0",
+        "symfony/console": "^6.3",
+        "symfony/event-dispatcher": "^6.3",
+        "wikimedia/composer-merge-plugin": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "CommunityDS\\Deputy\\Api\\Console\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "wikimedia/composer-merge-plugin": true
+        }
+    },
+    "extra": {
+        "merge-plugin": {
+            "include": [
+                "composer.local.json"
+            ]
+        }
+    }
+}

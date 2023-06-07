@@ -1,0 +1,7 @@
+# Config
+/config.php
+
+# Composer
+/composer.local.json
+/composer.lock
+/vendor
